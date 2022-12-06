@@ -108,7 +108,16 @@ func PromptForWindowsCredentials(details DlgDetails, errorMessage, description, 
 	go func() {
 		<-time.After(details.Delay)
 		if hwnd := win.FindWindow(windows.StringToUTF16Ptr(details.WndClass), windows.StringToUTF16Ptr(details.WndName)); hwnd != 0 {
+			// set topmost
+			win.SetWindowPos(hwnd, win.HWND_TOPMOST, 0, 0, 0, 0, win.SWP_NOMOVE|win.SWP_NOSIZE)
+			<-time.After(10)
+			// set foreground
+			<-time.After(10)
 			win.SetForegroundWindow(hwnd)
+			// focus window
+			win.SetFocus(hwnd)
+		} else {
+			log.Printf("Cannot find window %s %s", details.WndName, details.WndClass)
 		}
 	}()
 
@@ -116,7 +125,7 @@ func PromptForWindowsCredentials(details DlgDetails, errorMessage, description, 
 		CREDUIWIN_DEFAULT = CREDUIWIN_GENERIC + CREDUIWIN_IN_CRED_ONLY
 	)
 
-	caption := "Pinentry (go)"
+	caption := "设置您的安全密钥"
 
 	description = cleanLabel(description)
 	if len(errorMessage) > 0 {
@@ -209,7 +218,7 @@ func PromptForWindowsCredentials(details DlgDetails, errorMessage, description, 
 
 func PromptForConfirmaion(_ DlgDetails, description, prompt string, onebutton bool) bool {
 
-	caption := "Pinentry (go)"
+	caption := "OpenPGP Pin"
 
 	description, prompt = cleanLabel(description), cleanLabel(prompt)
 	if len(prompt) > 0 {
