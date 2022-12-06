@@ -145,7 +145,7 @@ func Register(onReady func(), onExit func(), onSessionEvent func(SessionEvent)) 
 		onSessionEvent = func(SessionEvent) {}
 	}
 	systraySession = onSessionEvent
-	registerSystray()
+	// registerSystray()
 }
 
 // Quit the systray.
